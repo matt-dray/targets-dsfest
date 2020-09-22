@@ -1,5 +1,4 @@
 .remark-slide-content {
-  background-color: #FFF;
   color: #000;
   font-size: 40px;
   border-bottom: 35px solid #006682;
@@ -23,8 +22,7 @@
 }
 
 .remark-slide-number {
-  font-size: 10px;
-  color: #FFF;
+  display: none;
 }
 
 a, a > code {
@@ -37,17 +35,15 @@ a, a > code {
   bottom: 3em;
   padding-right: 10em;
   font-size: 50%;
+  text-decoration: none;
 }
 
-.remark-code-line-highlighted     { background-color: #fff00; }
+.remark-code-line-highlighted  { background-color: #fff00; }
 
 .inverse {
   background-color: #152238;
-  color: #d6d6d6;
-}
-
-.inverse h1, .inverse h2, .inverse h3 {
-  color: #f3f3f3;
+  color: #fff;
+  text-decoration: none;
 }
 
 /* Two-column layout */
