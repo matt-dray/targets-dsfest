@@ -245,7 +245,6 @@ class: middle
 * free
 * under active development
 * got great documentation and examples
-* ~~part of [rOpenSci](https://ropensci.org/)~~
 
 ???
 * For {targets}, targets are any arbitrary values in memory (they must be files in Make)
@@ -325,7 +324,12 @@ Revisit today's materials:
 
 * [matt-dray.github.io/targets-dsfest/](https://matt-dray.github.io/drake-bioinformatics/#1)
 * [github.com/matt-dray/targets-dsfest](https://github.com/matt-dray/drake-bioinformatics/)
-* run today's example in Binder 
+
+Find me:
+
+`r icon::fa('twitter')` [mattdray](https://twitter.com/mattdray)
+`r icon::fa('github')` [matt-dray](https://github.com/matt-dray)
+`r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
 
 ???
 * Slides and source on GitHub, along with a single script file of the code used in the presentation
@@ -334,13 +338,13 @@ Revisit today's materials:
 ---
 class: inverse, middle, center
 
-<img src = 'img/targets-hex.png' width=20%>
+<img src='img/targets-hex.png' width=20%>
 
-# Reproducible workflows with {targets}
+# Hit your reproducibility {targets}
 
-`r icon::fa('twitter')` [mattdray](https://twitter.com/mattdray)
-`r icon::fa('github')` [matt-dray](https://github.com/matt-dray)
-`r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
+UK Government Data Science Festival, 2020-09-30
+
+Matt Dray, Cabinet Office
 
 ???
 * I hope I've convinced you to consider a workflow manager

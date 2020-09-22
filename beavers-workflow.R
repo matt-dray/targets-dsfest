@@ -20,8 +20,9 @@ library(targets)
 
 
 # Generate a _targets.R script template to contain your pipeline
-# {targets} knows to look here for your pipeline
-tar_script()
+# {targets} knows to look here for your pipeline.
+
+# tar_script()  # I've already run this in this example so you don't need to
 
 # Now you can add your options, functions and targets to the _targets.R file.
 # The _targets.R in this repo contains the pipeline that generates the example
@@ -32,7 +33,8 @@ tar_script()
 
 
 # Once you've completed your _targets.R script, you can check the manifest for
-# e.g. the commands in your pipeline
+# e.g. the commands in your pipeline.
+
 tar_manifest(fields = "command")
 
 # This is a good function to run to make sure that the pipeline contains what
@@ -46,6 +48,7 @@ tar_manifest(fields = "command")
 
 # When happy that the manifest reflects your pipeline, you can execute - or
 # 'make' - the steps.
+
 tar_make()
 
 # This will print to the console each target as it's created. This also creates
@@ -83,7 +86,6 @@ tar_make() # re-make the plan!
 
 # tar_make() will print to the console that the unchanged targets are skipped
 # (indicted with a tick) and that changed targets have been run (a circle).
-
 
 # You can then rinse and repeat your process of making updates, then checking
 # the changes and re-making the pipeline.
