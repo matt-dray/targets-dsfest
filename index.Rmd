@@ -71,42 +71,6 @@ Can I recreate what you did:
 ---
 class: middle
 
-So, ultimately:
-
-* can I trust your outputs?
-* can _you_ trust your outputs?
-
-???
-* Working in a reproducible way benefits you, with the excellent by-product of also helping others
-
----
-class: middle
-
-Today's focus:
-
-1. Make _workflows_ reproducible
-1. Try {targets}
-
-???
-* We could talk about this all day, but I'm focusing on one particular thing today
-* If these both mean nothing to you, then great
-* If you know about workflow reproducibility, maybe you haven't considered {targets}
-* If you do both these things, then you should be here talking instead of me
-
----
-class: heading-slide, middle, inverse
-
-# 1. Make workflows reproducible
-
-???
-* I'm referring to analysis 'workflows', but you might say 'pipelines'
-* As in you read, wrangle, model, plot and report data in some fashion
-* The process of turning inputs to outputs
-* This talk assumes that you do this in R, but ideas are transferable
-
----
-class: middle
-
 R has [many reproducibility tools](https://annakrystalli.me/talks/r-in-repro-research-dc.html#1), like:
 
 * [RStudio Projects](https://swcarpentry.github.io/r-novice-gapminder/02-project-intro/) to keep everything together
@@ -135,6 +99,33 @@ An example: [Can {drake} RAP?](https://www.rostrum.blog/2019/07/23/can-drake-rap
 * We want to build trust, but also make it easier to update publications as new data emerges
 * I wrote a thing about how {drake} might be useful for RAP in government
 * There are similar tools in other languages
+
+---
+class: middle
+
+Today's focus:
+
+1. Make _workflows_ reproducible
+1. Try {targets}
+
+???
+* We could talk about this all day, but I'm focusing on one particular thing today
+* If these both mean nothing to you, then great
+* If you know about workflow reproducibility, maybe you haven't considered {targets}
+* If you do both these things, then you should be here talking instead of me
+
+---
+class: heading-slide, middle, inverse
+
+# 1. Make workflows reproducible
+
+???
+* I'm referring to analysis 'workflows', but you might say 'pipelines'
+* As in you read, wrangle, model, plot and report data in some fashion
+* The process of turning inputs to outputs
+* This talk assumes that you do this in R, but ideas are transferable
+
+
 
 ---
 class: middle
@@ -176,18 +167,6 @@ You can't remember this
 * All of the files, functions and objects that result in one final output on the right
 * The spaghetti is all the relationships
 * How could you possibly remember the exact things to re-run if something changes?
-
----
-class: middle
-
-Maybe:
-
-Maybe  `01-read.R`, `02-wrangle.R`, etc?
-
-???
-* This doesn't scale well -- might be okay for smaller projects
-* Implies the analysis is perfectly sequential -- but some objects from file `01` might be applied in `03` rather than `02`
-* You'll still have to re-run from scratch sometimes
 
 ---
 
@@ -286,15 +265,196 @@ class: middle, inverse
 ---
 class: middle
 
-The process:
+Generate `_targets.R` in working directory
+
+```{r eval=FALSE}
+tar_script()
+```
+
+You can [view the file](https://github.com/matt-dray/targets-dsfest/blob/master/_targets.R)  for this example online
+
+---
+class: middle
+
+Set up functions and options in `_targets.R`
+
+```{r eval=FALSE}
+b_plot <- function(data, image) {
+  ggplot(data, aes(id, temp)) +
+    geom_boxplot() +
+    labs(title = "Beaver temperatures") +
+    add_phylopic(image)
+}
+```
+```{r eval=FALSE}
+tar_option_set(
+  packages = c(
+    "targets", "tarchetypes", "knitr",
+    "dplyr", "ggplot2", "rphylopic",
+  )
+)
+```
+
+???
+* Add your bespoke functions in the `_targets.R` file
+* Here's one (`b_plot`) for making a plot, there's another for making a summary table
+* In the option syou can provide the packages to be used
+
+---
+class: middle
+
+Set up pipeline in `_targets.R`
+
+```{r eval=FALSE}
+targets <- list(
+  tar_target(b1, mutate(beaver1, id = "A")),
+  tar_target(b2, mutate(beaver2, id = "B")),
+  tar_target(beavers, bind_rows(b1, b2)),
+  tar_target(uid, "be8670c2-a5bd-4b44-88e8-92f8b0c7f4c6"),
+  tar_target(png, image_data(uid, size = "512")[[1]]),
+  tar_target(plot, b_plot(beavers, png)),  #<<
+  tar_target(table, b_table(beavers)),
+  tarchetypes::tar_render(report, "beavers-report.Rmd")  #<<
+)
+
+tar_pipeline(targets)  #<<
+```
+
+???
+* Then it's a case of making a `tar_pipeline()`, which {targets} uses to 'remember' the relationships between objects
+* Mark objects as targets with `tar_target()`
+* `tarchetypes::tar_render()` is a special `tar_target()` case to account for redndering Rmd
+
+---
+class: middle
+
+View targets
+
+```{r eval=FALSE}
+tar_manifest(fields = "command")
+```
+
+```
+  name    command                                                                                                 
+  <chr>   <chr>                                                                                                   
+1 uid     "\"be8670c2-a5bd-4b44-88e8-92f8b0c7f4c6\""                                                              
+2 report  "tarchetypes::tar_render_run(path = \"beavers-report.Rmd\",  \\n     args = list(input = \"beavers-repo…
+3 beavers "bind_rows(b1, b2)"                                                                                     
+4 table   "b_table(beavers)"                                                                                      
+5 plot    "b_plot(beavers, png)"                                                                                  
+6 b1      "mutate(beaver1, id = \"A\")"                                                                           
+7 b2      "mutate(beaver2, id = \"B\")"                                                                           
+8 png     "image_data(uid, size = \"512\")[[1]]"                                                                  
+```
+
+---
+class: middle
+
+```{r eval=FALSE}
+tar_visnetwork()
+```
+
+<img src="img/tar-visnetwork-0.png" width="650"/>
+
+---
+class: middle
+
+Execute the pipeline
+
+```{r eval=FALSE}
+tar_make()
+```
+
+```
+● run target uid
+● run target b1
+● run target b2
+● run target png
+● run target beavers
+● run target plot
+● run target table
+● run target report
+```
+
+---
+class: middle
+
+```{r eval=FALSE}
+tar_visnetwork()
+```
+
+<img src="img/tar-visnetwork-1.png" width="650"/>
+
+---
+class: middle
+
+Now make your changes
+
+Example: alter the title in the `b_plot()` function
+
+---
+class: middle
+
+Check what has become outdated as a result
+
+```{r eval=FALSE}
+tar_outdated()
+```
+
+```
+[1] "report" "plot"  
+```
+
+---
+class: middle
+
+```{r eval=FALSE}
+tar_visnetwork()
+```
+
+<img src="img/tar-visnetwork-2.png" width="650"/>
+
+---
+class: middle
+
+Only outdated targets are re-run
+
+```{r eval=FALSE}
+tar_make()
+```
+
+```
+✓ skip target uid
+✓ skip target b1
+✓ skip target b2
+✓ skip target png
+✓ skip target beavers
+● run target plot
+✓ skip target table
+● run target report
+```
+
+---
+class: middle
+
+```{r eval=FALSE}
+tar_visnetwork()
+```
+
+<img src="img/tar-visnetwork-1.png" width="650"/>
+
+---
+class: middle
+
+To recap:
 
 1. `tar_script()` creates `_targets.R`
 1. Add `tar_targets()`
 1. Check `tar_manifest()`
-1. Execute with `tar_make()`
 1. `tar_visnetwork()` to visualise
+1. Execute with `tar_make()`
 1. Change stuff, check `tar_outdated()`
-1. Go to 3
+1. Go to 4
 
 ---
 class: inverse, middle

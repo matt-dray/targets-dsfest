@@ -19,7 +19,7 @@ library(targets)
 b_plot <- function(data, image) {
   ggplot(data, aes(id, temp)) +
     geom_boxplot() +
-    labs(title = "Beaver temperature") +
+    labs(title = "Beaver temperatures") +
     add_phylopic(image)
 }
 
@@ -29,7 +29,8 @@ b_table <- function(data) {
     group_by(id) %>%
     summarise(
       mean = mean(temp), sd = sd(temp),
-      min = min(temp, max = max(temp)),
+      min = min(temp, max = max(temp)
+      ),
       .groups = "drop"
     )
 }
