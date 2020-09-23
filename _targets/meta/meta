@@ -1,0 +1,12 @@
+name|type|data|command|depend|seed|path|bytes|time|format|iteration|parent|children|seconds|warnings|error
+b_plot|function|efe1e999b5457e30
+b_table|function|4b57fccad51cc747
+targets|object|d07680dbcea439c4
+uid|stem|2cae43ca6f2f8a09|44c0166a3d5076eb|ef46db3751d8e999|-754031854|_targets/objects/uid|89|1600851659|rds|vector|||0.001||
+b1|stem|f4fdd749fc0c1e7a|97ba11fdddaef9ab|3cc44da264aaaca3|150315868|_targets/objects/b1|833|1600851660|rds|vector|||0.023||
+b2|stem|f6033ff319f02001|5d63a05149904692|615cf5fda8da9ee1|-1422563363|_targets/objects/b2|782|1600851660|rds|vector|||0.007||
+png|stem|4f665d81e2a83c05|2c356fbe9c09d9ee|831d6889720eb9cd|-1832398895|_targets/objects/png|14921|1600851661|rds|vector|||1.124||
+beavers|stem|269c60bae3d93364|97532aec935de7b8|de20d2f20d6a4094|-1537492410|_targets/objects/beavers|1128|1600851661|rds|vector|||0.001||
+plot|stem|a09e0339af4a85a9|8d6de10ac2028967|34560aec466a6542|1931196220|_targets/objects/plot|140246|1600851661|rds|vector|||0.039||
+table|stem|e9c5f68ee7cd5ec2|70f8a0ee5755c275|2816da1e61200a37|-1420435068|_targets/objects/table|211|1600851661|rds|vector|||0.04||
+report|stem|d8001ce04df27f6d|ecb90bf6a8d2942f|a894d26c03fac9bf|-237041703|beavers-report.html*beavers-report.Rmd|740637|1600851663|file|vector|||2.094||
