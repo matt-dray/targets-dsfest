@@ -10,20 +10,32 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-class: center, middle, inverse
+class: middle, inverse
 
 ```{r xaringanextra, echo=FALSE}
 xaringanExtra::use_tile_view()
 xaringanExtra::use_fit_screen()
+htmltools::tagList(
+  xaringanExtra::use_clipboard(
+    button_text = "<i class=\"fa fa-clipboard\"></i>",
+    success_text = "<i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
+  ),
+  rmarkdown::html_dependency_font_awesome()
+)
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "facebook")
+)
 ```
 
 <img src='img/targets-hex.png' width=20%>
 
 # Hit your reproducibility {targets}
 
-UK Government Data Science Festival, 2020-09-30
+UK Gov Data Science Festival, 2020-09-30
 
-Matt Dray, Cabinet Office
+`r icon::fa('twitter')` [mattdray](https://twitter.com/mattdray)
+`r icon::fa('github')` [matt-dray](https://github.com/matt-dray)
+`r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
 
 ???
 * I have an entomology MSc and a PhD on ecosystem processes under environmental change (watching leaves rot, if you want to get technical)
@@ -51,6 +63,21 @@ From [The Turing Way](https://the-turing-way.netlify.com/introduction/introducti
 * The book is a great free resource for reproduciblity in general
 * I think we care about both (i) recreating outputs and (ii) updating with fresh data
 * I'm going to refer to this top row as reproducibility throughout
+
+---
+class: middle, center
+
+<img src='img/rap_v4_hex.png' width='45%'>
+
+[Reproducible Analytical Pipelines](https://dataingovernment.blog.gov.uk/2017/03/27/reproducible-analytical-pipeline/)
+
+???
+* In government we recognise the benefits of reproducible analysis and publications
+* Literally this is a badge of pride in government
+* We want to make sure the whole end-to-end process from data to publication is repeatable
+* We want to build trust, but also make it easier to update publications as new data emerges
+* I wrote a thing about how {drake} might be useful for RAP in government
+* There are similar tools in other languages
 
 ---
 class: middle
@@ -82,23 +109,6 @@ R has [many reproducibility tools](https://annakrystalli.me/talks/r-in-repro-res
 ???
 * Some general tools, but also packages for very specific things like filepath management
 * Of course, there's agnostic tools like Git and Docker too
-
----
-class: middle, center
-
-[Reproducible Analytical Pipelines](https://ukgovdatascience.github.io/rap-website/)
-
-<img src='img/rap_v5_hex.png' width='40%'>
-
-An example: [Can {drake} RAP?](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
-
-???
-* In government we recognise the benefits of reproducible analysis and publications
-* Literally this is a badge of pride in government
-* We want to make sure the whole end-to-end process from data to publication is repeatable
-* We want to build trust, but also make it easier to update publications as new data emerges
-* I wrote a thing about how {drake} might be useful for RAP in government
-* There are similar tools in other languages
 
 ---
 class: middle
@@ -182,6 +192,7 @@ Let a workflow manager handle it
 * There are many workflow managers -- some general, some language-specific
 * The one that most people might be familiar with is Make (capital 'M')
 * It's language agnostic, but has some limitations -- it operates on files, for example and requires you to learn how to use Make
+* Luigi and Airflow are alternatives for Python
 * This is a powerful thought technology
 
 ---
@@ -197,20 +208,41 @@ class: middle, center
 
 <img src="img/targets-hex.png" width="45%"/>
 
-[{targets}](https://wlandau.github.io/targets-manual/) by [Will Landau](https://wlandau.github.io/)
+[{targets}](https://wlandau.github.io/targets/) by [Will Landau](https://wlandau.github.io/)
 
 ???
 * {targets}: the R package built by Will Landau for managing workflows and making your analysis pipeline more reproducible
-* What the heck is {drake}?
+
+---
+class: middle
+
+From [the manual](https://wlandau.github.io/targets-manual/):
+
+>...<mark>learns</mark> how your pipeline fits together, <mark>skips costly runtime</mark> for tasks that are already up to date, runs only the <mark>necessary computation</mark>, supports implicit <mark>parallel computing</mark>, abstracts files as <mark>R objects</mark>, shows <mark>tangible evidence</mark> that the results match the underlying code and data.
+
+---
+class: middle
+
+Plus excellent docs:
+
+* the [site](https://wlandau.github.io/targets/) and [source](https://github.com/ropensci/targets)
+* the [{targets} R package user manual](https://wlandau.github.io/targets-manual/index.html)
+* [minimal example](https://github.com/wlandau/targets-minimal) (can be run in RStudio Cloud)
+* [targetsketch](https://wlandau.shinyapps.io/targetsketch/): a Shiny app for learning {targets} and setup new projects
+
+More available from [the {targets} README](https://github.com/wlandau/targets/blob/master/README.md).
 
 ---
 class: middle, center
 
-<img src="img/drake-hex.png" width="45%"/>
-
 Supersedes [{drake}](https://books.ropensci.org/drake/) by [Will Landau](https://wlandau.github.io/)
 
+<img src="img/drake-hex.png" width="25%"/>
+
+>...major <mark>user-side limitations</mark> regarding data management, collaboration, and parallel efficiency
+
 ???
+* This sounds suspiciously similar to {drake}.
 * "Community feedback have exposed major user-side limitations regarding data management, collaboration, and parallel efficiency."
 * "Solutions in drake itself would make the package incompatible with existing projects that use it, and the internal architecture is too copious, elaborate, and mature for such extreme refactoring."
 * "The targets package borrows from past learnings, user suggestions, discussions, complaints, success stories, and feature requests, and it improves the user experience in ways that will never be possible in drake."
@@ -218,27 +250,10 @@ Supersedes [{drake}](https://books.ropensci.org/drake/) by [Will Landau](https:/
 ---
 class: middle
 
-{targets} is compelling because it's:
-
-* R-specific
-* free
-* under active development
-* got great documentation and examples
-
-???
-* For {targets}, targets are any arbitrary values in memory (they must be files in Make)
-* Proprietary software might be okay when working alone or with specific collaborators who also have the tool, but what about the wider world?
-* Will is active at responding to issues and developing new things (i.e. deciding that {targets} was the right response to the development and learning from {drake}, in particular)
-* Will has provided a lot of materials to explain the use of {targets}, as well as learning materials like a Shiny app and installable example projects (I've listed these on a slide at the end)
-* {drake} was part of rOpenSci for 'carefully vetted, staff- and community-contributed R software tools that lower barriers to working with scientific data sources and data that support research applications on the web' - requires peer review
-
----
-class: middle
-
 At its simplest:
 
-1. Make a `tar_pipeline()`
-1. Run `tar_make()`
+1. Write a pipeline script
+1. Execute the script
 1. Change stuff
 1. Go to 2
 
@@ -251,16 +266,23 @@ At its simplest:
 * In fact, this workflow will be running from within this {xaringan} (RMarkdown slides)
 
 ---
-class: middle, inverse
+class: middle, center, inverse
 
-# Small demo
+<img src='img/beaver.png' width=50%>
 
-<img src='img/beaver.png'>
+# Contrived, simple demo
 
 ???
 * Using the built-in `beaver1` and `beaver2` datasets
 * You can see something similar in the walkthrough chapter of the {targets} user manual
 * This example is run entirely within this {xaringan} presentation, giving you a flavour of its versatility
+
+---
+class: middle
+
+The goal: a {targets} pipeline that creates a chart and table for an R Markdown file and renders it.
+
+Then change something and re-run the pipeline.
 
 ---
 class: middle
@@ -279,14 +301,6 @@ class: middle
 Set up functions and options in `_targets.R`
 
 ```{r eval=FALSE}
-b_plot <- function(data, image) {
-  ggplot(data, aes(id, temp)) +
-    geom_boxplot() +
-    labs(title = "Beaver temperatures") +
-    add_phylopic(image)
-}
-```
-```{r eval=FALSE}
 tar_option_set(
   packages = c(
     "targets", "tarchetypes", "knitr",
@@ -294,6 +308,15 @@ tar_option_set(
   )
 )
 ```
+```{r eval=FALSE}
+b_plot <- function(data, image) {
+  ggplot(data, aes(id, temp)) +
+    geom_boxplot() +
+    labs(title = "Weasel temperatures") +
+    add_phylopic(image)
+}
+```
+
 
 ???
 * Add your bespoke functions in the `_targets.R` file
@@ -388,9 +411,11 @@ tar_visnetwork()
 ---
 class: middle
 
-Now make your changes
+Whoops...
 
-Example: alter the title in the `b_plot()` function
+<span style="background-color: #FF0000">-</span> `labs(title = "Weasel temperatures")`
+
+<span style="background-color: #00FF00">\+</span> `labs(title = "Beaver temperatures")`
 
 ---
 class: middle
@@ -446,6 +471,18 @@ tar_visnetwork()
 ---
 class: middle
 
+The [final product](https://matt-dray.github.io/targets-dsfest/beavers-report.html)
+
+```{r report, echo=FALSE}
+knitr::include_url(
+  "https://matt-dray.github.io/targets-dsfest/beavers-report.html",
+  height = 440
+)
+```
+
+---
+class: middle
+
 To recap:
 
 1. `tar_script()` creates `_targets.R`
@@ -459,52 +496,16 @@ To recap:
 ---
 class: inverse, middle
 
-# What now?
-
-???
-* We talked about reproducibility, about workflow managers, about {targets}
-* What do I think you should do now?
-
----
-class: middle
-
-Check out official {targets} materials:
-
-* the [site](https://wlandau.github.io/targets/) and [source](https://github.com/ropensci/targets)
-* the [{targets} R package user manual](https://wlandau.github.io/targets-manual/index.html)
-* [minimal example](https://github.com/wlandau/targets-minimal) (can be run in RStudio Cloud)
-* [targetsketch](https://wlandau.shinyapps.io/targetsketch/): a Shiny app for learning {targets} and setup new projects
-
-More available from [the {targets} README](https://github.com/wlandau/targets/blob/master/README.md).
-
----
-class: middle
-
-Revisit today's materials:
-
-* [matt-dray.github.io/targets-dsfest/](https://matt-dray.github.io/drake-bioinformatics/#1)
-* [github.com/matt-dray/targets-dsfest](https://github.com/matt-dray/drake-bioinformatics/)
-
-Find me:
-
-`r icon::fa('twitter')` [mattdray](https://twitter.com/mattdray)
-`r icon::fa('github')` [matt-dray](https://github.com/matt-dray)
-`r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
-
-???
-* Slides and source on GitHub, along with a single script file of the code used in the presentation
-* Binder is a service that lets you launch a Notebook or RStudio instance in the cloud with data and code that you provide
-
----
-class: inverse, middle, center
-
 <img src='img/targets-hex.png' width=20%>
 
 # Hit your reproducibility {targets}
 
-UK Government Data Science Festival, 2020-09-30
+1. Make _workflows_ reproducible
+2. Try {targets}
 
-Matt Dray, Cabinet Office
+`r icon::fa('twitter')` [mattdray](https://twitter.com/mattdray)
+`r icon::fa('github')` [matt-dray](https://github.com/matt-dray)
+`r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
 
 ???
 * I hope I've convinced you to consider a workflow manager
@@ -513,8 +514,23 @@ Matt Dray, Cabinet Office
 ---
 class: middle
 
-Sources
+Revisit materials:
 
+* [these slides](https://matt-dray.github.io/drake-bioinformatics/#1)
+* [source code](https://github.com/matt-dray/drake-bioinformatics/)
+* [blog post](https://www.rostrum.blog/)
+* [{drake} version of this talk](https://www.rostrum.blog/2020/01/31/reprobioinformatics/) and [a blog post](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
+
+???
+* Slides and source on GitHub, along with a single script file of the code used in the presentation
+* Binder is a service that lets you launch a Notebook or RStudio instance in the cloud with data and code that you provide
+
+---
+class: middle
+
+Image sources:
+
+* RAP [hex logo](https://github.com/matt-dray/stickers/blob/master/output/rap_v4_hex.png)
 * {targets} [hex logo](https://github.com/wlandau/targets/blob/master/man/figures/logo.png)
 * {drake} [hex logo](https://camo.githubusercontent.com/44749362ca36c9e3295f2bcf18975d811564c121/68747470733a2f2f646f63732e726f70656e7363692e6f72672f6472616b652f7265666572656e63652f666967757265732f6c6f676f2e737667)
 * {drake} hairball by [Frederik Aust](https://twitter.com/FrederikAust/status/1205103780938833921?s=20)
