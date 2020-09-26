@@ -341,7 +341,7 @@ targets &lt;- list(
   tar_target(png, image_data(uid, size = "512")[[1]]),
 * tar_target(plot, b_plot(beavers, png)),
   tar_target(table, b_table(beavers)),
-* tarchetypes::tar_render(report, "beavers-report.Rmd")
+* tarchetypes::tar_render(report, "report-beavers.Rmd")
 )
 
 *tar_pipeline(targets)
