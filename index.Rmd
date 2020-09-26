@@ -411,6 +411,18 @@ tar_visnetwork()
 ---
 class: middle
 
+The [rendered R Markdown](https://matt-dray.github.io/targets-dsfest/beavers-report.html)
+
+```{r report-mistake, echo=FALSE}
+knitr::include_url(
+  "https://matt-dray.github.io/targets-dsfest/report-beavers-mistake.html",
+  height = 440
+)
+```
+
+---
+class: middle
+
 Whoops...
 
 <span style="background-color: #FF0000">-</span> `labs(title = "Weasel temperatures")`
@@ -473,9 +485,9 @@ class: middle
 
 The [final product](https://matt-dray.github.io/targets-dsfest/beavers-report.html)
 
-```{r report, echo=FALSE}
+```{r report-fix, echo=FALSE}
 knitr::include_url(
-  "https://matt-dray.github.io/targets-dsfest/beavers-report.html",
+  "https://matt-dray.github.io/targets-dsfest/report-beavers.html",
   height = 440
 )
 ```

@@ -19,7 +19,7 @@ library(targets)
 b_plot <- function(data, image) {
   ggplot(data, aes(id, temp)) +
     geom_boxplot() +
-    labs(title = "Beaver temperatures") +
+    labs(title = "Beavers temperatures") +
     add_phylopic(image)
 }
 
@@ -56,7 +56,7 @@ targets <- list(
   tar_target(plot, b_plot(beavers, png)),
   tar_target(table, b_table(beavers)),
   # Create report
-  tarchetypes::tar_render(report, "beavers-report.Rmd")
+  tarchetypes::tar_render(report, "report-beavers.Rmd")
 )
 
 # End with a call to tar_pipeline() to wrangle the targets together.

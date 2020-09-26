@@ -5,13 +5,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_document
 ---
 
-# About
-
-From the `?beavers` help page:
-
-> Reynolds (1994) describes a small part of a study of the long-term temperature dynamics of beaver Castor canadensis in north-central Wisconsin. Body temperature was measured by telemetry every 10 minutes for four females, but data from a one period of less than a day for each of two animals is used there.
-
-# Data
+# Results
 
 What does the distribution of body temperatures look like?
 
@@ -24,6 +18,12 @@ And what are the mean body temperature values?
 ```{r r-table, echo=FALSE}
 tar_read(table) %>% kable()
 ```
+
+# About
+
+From the `?beavers` help page:
+
+> Reynolds (1994) describes a small part of a study of the long-term temperature dynamics of beaver Castor canadensis in north-central Wisconsin. Body temperature was measured by telemetry every 10 minutes for four females, but data from a one period of less than a day for each of two animals is used there.
 
 # Citation
 

@@ -13,17 +13,21 @@ The [{targets}](https://wlandau.github.io/targets/) package by [Will Landau]("ht
 
 What does that mean? {targets} ‘remembers’ the relationships between objects in your workflow. When you update your analysis, {targets} makes sure that only the impacted objects are re-run. This means you don’t have to recreate everything from scratch each time.
 
-## Code
+## Demo code
 
-This repo also includes a demo for using the package.
+This repo also includes files used as part of a {targets} demo used in the slides:
 
-The script `beavers-workflow.R` contains steps for executing the the {targets} pipeline in the file `_targets.R`, which renders the `beavers-report.Rmd` R Markdown file into the `beavers-report.html` file.
+* `targets.R` contains the pipeline
+* `run-pipeline-beavers.R` has code to execute and inspect the pipeline
+* `_targets/` is the cache of objects and metadata (like {targets} 'memory')
+* `report-beavers.Rmd` is a dummy R Markdown report to be rendered in the pipeline
+* `report-beavers-mistake.html` is a rendered version of the R Markdown file, but it has an error!
+* `report-beavers.html` is the final rendered version of the R Markdown after the mistake is corrected
 
-The example shows how to use:
+The slides describe an example using these materials, but in short:
 
-* `tar_script()` to create a `_targets.R` file with, which is where your targets are created with `tar_targets()` and pulled together with `tar_pipeline()`
-* `tar_manifest()` to check the configuration of your targets
-* `tar_make()` to execute the pipeline, which caches outputs and metadata in a `_targets/` directory that can be read from with `tar_read()`
-* `tar_visnetwork` to get a graph network visualisation of your pipeline
-* `tar_outdated()` to see which targets need to be updated following a change to your code or data
-* these functions to explore changes and to `tar_make()` it again to bring everything up to date
+1. `tar_script()` creates a `_targets.R` file, which is where you declare you write functions and options and create your targets with `tar_targets()`, declaring the pipeline with `tar_pipeline()`
+1. `tar_manifest()` lets you check the configuration of your targets
+1. `tar_visnetwork` visualises your pipeline as a graph network
+1. `tar_make()` executes your pipeline, which caches outputs and metadata in a `_targets/` directory that can be read from with `tar_read()` and `tar_load()`
+1. `tar_outdated()` prints any targets that need to be updated following any changes to other targets, after which you can reinspect your pipeline and re-make it
