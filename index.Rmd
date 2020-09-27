@@ -42,6 +42,20 @@ UK Gov Data Science Festival, 2020-09-30
 * Over five years as a government analyst, much of it spent encouraging a switch to R from Excel-led processes
 
 ---
+class: middle
+
+Revisit materials:
+
+* [these slides](https://matt-dray.github.io/drake-bioinformatics/#1)
+* [source code](https://github.com/matt-dray/drake-bioinformatics/)
+* [blog post](https://www.rostrum.blog/2020/09/27/targets-dsfest/)
+* [{drake} version of this talk](https://www.rostrum.blog/2020/01/31/reprobioinformatics/) and [a blog post](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
+
+???
+* Slides and source on GitHub, along with a single script file of the code used in the presentation
+* Binder is a service that lets you launch a Notebook or RStudio instance in the cloud with data and code that you provide
+
+---
 class: middle, inverse
 
 # Reproducevangelism
@@ -531,20 +545,6 @@ class: inverse, middle
 ???
 * I hope I've convinced you to consider a workflow manager
 * And hopefully to take a look at {targets} as your tool of choice for R
-
----
-class: middle
-
-Revisit materials:
-
-* [these slides](https://matt-dray.github.io/drake-bioinformatics/#1)
-* [source code](https://github.com/matt-dray/drake-bioinformatics/)
-* [blog post](https://www.rostrum.blog/)
-* [{drake} version of this talk](https://www.rostrum.blog/2020/01/31/reprobioinformatics/) and [a blog post](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
-
-???
-* Slides and source on GitHub, along with a single script file of the code used in the presentation
-* Binder is a service that lets you launch a Notebook or RStudio instance in the cloud with data and code that you provide
 
 ---
 class: middle
