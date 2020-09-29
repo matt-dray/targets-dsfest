@@ -38,8 +38,9 @@ UK Gov Data Science Festival, 2020-09-30
 `r icon::fa('globe')` [rostrum.blog](https://www.rostrum.blog/) 
 
 ???
-* I have an entomology MSc and a PhD on ecosystem processes under environmental change (watching leaves rot, if you want to get technical)
-* Over five years as a government analyst, much of it spent encouraging a switch to R from Excel-led processes
+* Work in CSPS in CO
+* Find me on the Slack as mattdray_co
+* You can find me on the web
 
 ---
 class: middle
@@ -47,13 +48,15 @@ class: middle
 Revisit materials:
 
 * [these slides](https://matt-dray.github.io/drake-bioinformatics/#1)
-* [source code](https://github.com/matt-dray/drake-bioinformatics/)
+* [source](https://github.com/matt-dray/drake-bioinformatics/) including demo code
 * [blog post](https://www.rostrum.blog/2020/09/27/targets-dsfest/)
-* [{drake} version of this talk](https://www.rostrum.blog/2020/01/31/reprobioinformatics/) and [a blog post](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
+* [{drake} talk](https://www.rostrum.blog/2020/01/31/reprobioinformatics/) and [blog post](https://www.rostrum.blog/2019/07/23/can-drake-rap/)
 
 ???
-* Slides and source on GitHub, along with a single script file of the code used in the presentation
-* Binder is a service that lets you launch a Notebook or RStudio instance in the cloud with data and code that you provide
+* Put these up fron so you can easily find them
+* Slides and source on GitHub
+* Short blog post too
+* I've written about the predecessor to {targets} in another post/presentation (I'll mention that later)
 
 ---
 class: middle, inverse
@@ -61,9 +64,9 @@ class: middle, inverse
 # Reproducevangelism
 
 ???
-* I don't want to condescend or dictate, I want to build from the general principle of 'reproducible is good'
-* So let's define 'reproducibility'
-* Very important in scientific fields given the reproducibility crisis
+* Let's get on the same page
+* What is reproducibility?
+* Why is it good?
 
 ---
 class: middle, center
@@ -73,7 +76,6 @@ class: middle, center
 From [The Turing Way](https://the-turing-way.netlify.com/introduction/introduction) by The Alan Turing Institute
 
 ???
-* We could get into a heated debate about the definition
 * The book is a great free resource for reproduciblity in general
 * I think we care about both (i) recreating outputs and (ii) updating with fresh data
 * I'm going to refer to this top row as reproducibility throughout
@@ -87,11 +89,8 @@ class: middle, center
 
 ???
 * In government we recognise the benefits of reproducible analysis and publications
-* Literally this is a badge of pride in government
 * We want to make sure the whole end-to-end process from data to publication is repeatable
 * We want to build trust, but also make it easier to update publications as new data emerges
-* I wrote a thing about how {drake} might be useful for RAP in government
-* There are similar tools in other languages
 
 ---
 class: middle
@@ -106,7 +105,7 @@ Can I recreate what you did:
 ???
 * Do I have all the code, files and documentation?
 * Can I do it on another OS with dependencies missing?
-* Will the code still work next year, or will dependency chenages break it?
+* Will the code still work next year, or will dependency changes break it?
 * Did you document it well enough? Is everything stored somewhere remotely?
 
 ---
@@ -121,22 +120,20 @@ R has [many reproducibility tools](https://annakrystalli.me/talks/r-in-repro-res
 * [{renv}](https://rstudio.github.io/renv/articles/renv.html) for dependency management
 
 ???
-* Some general tools, but also packages for very specific things like filepath management
-* Of course, there's agnostic tools like Git and Docker too
+* I'll be focusing on R today, but other software has these types of tools
+* Of course, there's language-agnostic tools like Git and Docker too
 
 ---
 class: middle
 
 Today's focus:
 
-1. Make _workflows_ reproducible
+1. Make workflows reproducible
 1. Try {targets}
 
 ???
-* We could talk about this all day, but I'm focusing on one particular thing today
-* If these both mean nothing to you, then great
-* If you know about workflow reproducibility, maybe you haven't considered {targets}
-* If you do both these things, then you should be here talking instead of me
+* I want to talk about making workflows (or pipelines) reproducible
+* I want to tell you about a package in R for doing it
 
 ---
 class: heading-slide, middle, inverse
@@ -147,16 +144,15 @@ class: heading-slide, middle, inverse
 * I'm referring to analysis 'workflows', but you might say 'pipelines'
 * As in you read, wrangle, model, plot and report data in some fashion
 * The process of turning inputs to outputs
-* This talk assumes that you do this in R, but ideas are transferable
-
-
+* The ideas here should be transferable
+* This is a powerful thought technology
 
 ---
 class: middle
 
-What about your analytical _workflow_ itself?
+What about the relationships between functions, files and outputs?
 
-How do you keep track of function, file and object relationships?
+Is your workflow reproducible?
 
 ???
 * Have you considered this before?
@@ -191,6 +187,7 @@ You can't remember this
 * All of the files, functions and objects that result in one final output on the right
 * The spaghetti is all the relationships
 * How could you possibly remember the exact things to re-run if something changes?
+* 01_file.R, 02_file.R, etc, doesn't really scale
 
 ---
 
@@ -207,7 +204,6 @@ Let a workflow manager handle it
 * The one that most people might be familiar with is Make (capital 'M')
 * It's language agnostic, but has some limitations -- it operates on files, for example and requires you to learn how to use Make
 * Luigi and Airflow are alternatives for Python
-* This is a powerful thought technology
 
 ---
 class: heading-slide, middle, inverse
@@ -215,7 +211,7 @@ class: heading-slide, middle, inverse
 # 2. Try {targets}
 
 ???
-* If there's so many managers then why {targets}?
+* In this section: if there's so many managers then why {targets}?
 
 ---
 class: middle, center
@@ -226,25 +222,38 @@ class: middle, center
 
 ???
 * {targets}: the R package built by Will Landau for managing workflows and making your analysis pipeline more reproducible
+* Disclaimer: I haven't spent a lot of time with this package and it's quite new
 
 ---
 class: middle
 
-From [the manual](https://wlandau.github.io/targets-manual/):
+From [the manual](https://wlandau.github.io/targets-manual/), it:
 
->...<mark>learns</mark> how your pipeline fits together, <mark>skips costly runtime</mark> for tasks that are already up to date, runs only the <mark>necessary computation</mark>, supports implicit <mark>parallel computing</mark>, abstracts files as <mark>R objects</mark>, shows <mark>tangible evidence</mark> that the results match the underlying code and data.
+* learns how your pipeline fits together
+* skips costly runtime
+* runs only the necessary computation
+* supports parallel computing
+* abstracts files as R objects
+* evidence that results match the code and data
+
+???
+* Identifies and remembers the relationships for you
+* Helps speed things up
+* Is R-specific
+* Gives a record that the output is the result of the underlying inputs
+
 
 ---
 class: middle
 
-Plus excellent docs:
+It also has excellent docs:
 
 * the [site](https://wlandau.github.io/targets/) and [source](https://github.com/ropensci/targets)
 * the [{targets} R package user manual](https://wlandau.github.io/targets-manual/index.html)
 * [minimal example](https://github.com/wlandau/targets-minimal) (can be run in RStudio Cloud)
 * [targetsketch](https://wlandau.shinyapps.io/targetsketch/): a Shiny app for learning {targets} and setup new projects
 
-More available from [the {targets} README](https://github.com/wlandau/targets/blob/master/README.md).
+More resources in [the {targets} README](https://github.com/wlandau/targets/blob/master/README.md).
 
 ---
 class: middle, center
@@ -253,7 +262,7 @@ Supersedes [{drake}](https://books.ropensci.org/drake/) by [Will Landau](https:/
 
 <img src="img/drake-hex.png" width="25%"/>
 
->...major <mark>user-side limitations</mark> regarding data management, collaboration, and parallel efficiency
+>...major user-side limitations regarding data management, collaboration, and parallel efficiency
 
 ???
 * This sounds suspiciously similar to {drake}.
@@ -272,12 +281,9 @@ At its simplest:
 1. Go to 2
 
 ???
-* The smallest amount of things you need to do is run two functions
-* You create a 'plan' object that' contains the functions, objects and data in your's a bit like a recipe for generating your analysis
-* Then you run `make()` on that object to run the steps and 'bake your cake'
+* This is very basically what you do with {targets}
+* It requires a slight change in thinking
 * Let's go through a simple, arbitrary, trivial example
-* We're not going to think too hard about folder structure in this example
-* In fact, this workflow will be running from within this {xaringan} (RMarkdown slides)
 
 ---
 class: middle, center, inverse
@@ -289,14 +295,17 @@ class: middle, center, inverse
 ???
 * Using the built-in `beaver1` and `beaver2` datasets
 * You can see something similar in the walkthrough chapter of the {targets} user manual
-* This example is run entirely within this {xaringan} presentation, giving you a flavour of its versatility
 
 ---
 class: middle
 
-The goal: a {targets} pipeline that creates a chart and table for an R Markdown file and renders it.
+The goal is a {targets} pipeline that:
 
-Then change something and re-run the pipeline.
+* creates a chart
+* creates a table
+* renders them in an R Markdown report
+
+Then we'll change something and re-run it.
 
 ---
 class: middle
@@ -307,6 +316,9 @@ Generate [`_targets.R`](https://github.com/matt-dray/targets-dsfest/blob/master/
 tar_script()
 ```
 
+???
+* You create a special file that {targets} will recognise as containing a pipeline
+* You can create this yourself, or use this handy function to generate it with a template inside
 
 ---
 class: middle
@@ -332,9 +344,9 @@ b_plot <- function(data, image) {
 
 
 ???
-* Add your bespoke functions in the `_targets.R` file
+* You can add options in there, including your package calls
+* Also add your bespoke functions
 * Here's one (`b_plot`) for making a plot, there's another for making a summary table
-* In the option syou can provide the packages to be used
 
 ---
 class: middle
@@ -359,12 +371,12 @@ tar_pipeline(targets)  #<<
 ???
 * Then it's a case of making a `tar_pipeline()`, which {targets} uses to 'remember' the relationships between objects
 * Mark objects as targets with `tar_target()`
-* `tarchetypes::tar_render()` is a special `tar_target()` case to account for redndering Rmd
+* `tarchetypes::tar_render()` is a special `tar_target()` case to account for rendering Rmd (so you don't have to write an argument-heavy `tar_target()` call)
 
 ---
 class: middle
 
-View targets
+View your targets
 
 ```{r eval=FALSE}
 tar_manifest(fields = "command")
@@ -383,6 +395,10 @@ tar_manifest(fields = "command")
 8 png     "image_data(uid, size = \"512\")[[1]]"                                                                  
 ```
 
+???
+* This gives you a dataframe of the steps of the analysis
+* You can check this to see if it's what you expect
+
 ---
 class: middle
 
@@ -391,6 +407,10 @@ tar_visnetwork()
 ```
 
 <img src="img/tar-visnetwork-0.png" width="650"/>
+
+???
+* There's a handy function for viewing a graph representation of the files, objects, etc
+* the colour key indicates these targets are 'all out of date' because you haven't executed your pipeline yet
 
 ---
 class: middle
@@ -412,6 +432,11 @@ tar_make()
 ● run target report
 ```
 
+???
+* Now we execute the pipeline
+* {targets} knows what order things need to be run, based on the content of the manifest
+* This prints to the console a step by step of what's being run
+
 ---
 class: middle
 
@@ -422,6 +447,12 @@ This is like a 'memory' for {targets}
 
 `tar_load()` and `tar_read()` to fetch objects
 
+???
+* In executing the pipeline, the objects get stored in a cache
+* Also the metadata for each of those objects is stored
+* You can pull out the objects as you please
+* You can call for these objects in your Rmd file with `tar_load()` and `tar_read()`
+
 ---
 class: middle
 
@@ -430,6 +461,10 @@ tar_visnetwork()
 ```
 
 <img src="img/tar-visnetwork-1.png" width="650"/>
+
+???
+* So when we re-visualise, we can see the colours have changed from being 'outdated' to being 'up to date'
+
 
 ---
 class: middle
@@ -443,6 +478,10 @@ knitr::include_url(
 )
 ```
 
+???
+* Here's what the report output looks like
+* Do you notice a problem?
+
 ---
 class: middle
 
@@ -451,6 +490,11 @@ Whoops...
 <span style="background-color: #FF0000">-</span> `labs(title = "Weasel temperatures")`
 
 <span style="background-color: #00FF00">\+</span> `labs(title = "Beaver temperatures")`
+
+???
+* The chart title is wrong!
+* Go into the function in the `_targets.R` file and correct it
+* Now we have some targets downstream of this function that will be out of date
 
 ---
 class: middle
@@ -465,6 +509,12 @@ tar_outdated()
 [1] "report" "plot"  
 ```
 
+???
+* We changed the function that creates the plot
+* The plot goes into the report
+* So the report and plot targets are out of date
+* {targets} will use this knowledge to re-run only these files when we re-execute
+
 ---
 class: middle
 
@@ -473,6 +523,9 @@ tar_visnetwork()
 ```
 
 <img src="img/tar-visnetwork-2.png" width="650"/>
+
+???
+* The graph now shows that the funciton and the two targets oare outdated
 
 ---
 class: middle
@@ -494,6 +547,11 @@ tar_make()
 ● run target report
 ```
 
+???
+* When we re-execute the pipeline, {targets} only re-runs the plot creation and Rmd render
+* It skips the other targets; it doesn't re-run them
+* They remain unchanged in the cache
+
 ---
 class: middle
 
@@ -502,6 +560,9 @@ tar_visnetwork()
 ```
 
 <img src="img/tar-visnetwork-1.png" width="650"/>
+
+???
+( So the graph shows everything is up to date again)
 
 ---
 class: middle
@@ -515,6 +576,9 @@ knitr::include_url(
 )
 ```
 
+???
+* And here's the corrected output
+
 ---
 class: middle
 
@@ -527,6 +591,24 @@ To recap:
 1. Execute with `tar_make()`
 1. Change stuff, check `tar_outdated()`
 1. Go to 4
+
+???
+* This is a rough recap with functions named
+
+---
+class: middle
+
+And again, at its simplest:
+
+1. Write a pipeline script
+1. Execute the script
+1. Change stuff
+1. Go to 2
+
+???
+* Here's the high-level reminder again
+* Create the pipeline, execute it, change stuff, re-execute it
+* When people come back to this analysis in future, they can check that everything is up to date
 
 ---
 class: inverse, middle
